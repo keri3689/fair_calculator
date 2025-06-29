@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fair Price Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 { text-align: center; }
+    .item-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #total {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #items-list {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fair Price Calculator</h1>
+  <div id="items-list"></div>
+  <div id="total">Total: £0.00</div>
+
+  <div class="item-buttons">
+    <button onclick="addItem('Walkers crisps', 0.5)">Walkers crisps (£0.50)</button>
+    <button onclick="addItem('Border biscuits', 0.6)">Border biscuits (£0.60)</button>
+    <button onclick="addItem('White crème egg', 0.8)">White crème egg (£0.80)</button>
+    <button onclick="addItem('Original crème egg', 0.8)">Original crème egg (£0.80)</button>
+    <button onclick="addItem('Nature Valley bar', 1.0)">Nature Valley bar (£1.00)</button>
+    <button onclick="addItem('Cawston Apple & Mango juice carton', 1.0)">Cawston juice (£1.00)</button>
+    <button onclick="addItem('Gogo squeeZ Apple smoothie', 1.0)">Gogo Apple (£1.00)</button>
+    <button onclick="addItem('Gogo squeeZ Apple & Strawberry smoothie', 1.0)">Gogo Apple & Strawberry (£1.00)</button>
+    <button onclick="addItem('Sour cherry & apple squashies', 1.5)">Squashies (£1.50)</button>
+    <button onclick="clearAll()">Clear</button>
+  </div>
+
+  <script>
+    let total = 0;
+    let items = [];
+
+    function addItem(name, price) {
+      total += price;
+      items.push(`${name} - £${price.toFixed(2)}`);
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('total').textContent = `Total: £${total.toFixed(2)}`;
+      document.getElementById('items-list').innerHTML = items.map(i => `<div>${i}</div>`).join('');
+    }
+
+    function clearAll() {
+      total = 0;
+      items = [];
+      updateDisplay();
+    }
+  </script>
+</body>
+</html>
