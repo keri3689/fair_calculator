@@ -1,139 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Product Price Calculator</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 0 10px;
-    text-align: center;
-  }
-  .logo {
-    max-width: 150px;
-    margin: 0 auto 20px;
-    display: block;
-  }
-  .button-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  button.product-btn {
-    background-color: white;
-    color: #007bff;
-    border: 2px solid #007bff;
-    padding: 25px 15px; /* wider padding for border space */
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    user-select: none;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  button.product-btn:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #0056b3;
-  }
-  button#clear-btn {
-    background-color: white;
-    color: #dc3545;
-    border: 2px solid #dc3545;
-    grid-column: span 3;
-    margin-bottom: 20px;
-    padding: 15px 0;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  button#clear-btn:hover {
-    background-color: #dc3545;
-    color: white;
-    border-color: #a71d2a;
-  }
-  #total {
-    font-weight: bold;
-    font-size: 1.3rem;
-  }
-  .price {
-    display: block;
-    margin-top: 5px;
-    font-weight: normal;
-    font-size: 0.9rem;
-    color: #555;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px auto;
+      max-width: 1000px;
+      padding: 0 20px;
+    }
+
+    .logo {
+      max-width: 150px;
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .left-panel, .right-panel {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .selected-items, .history-panel {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .selected-items ul, .history-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+      text-align: left;
+    }
+
+    .selected-items li, .history-panel li {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* Add faint separator line between transactions */
+    #history-list li {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Remove line from last item */
+    #history-list li:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    button.product-btn {
+      background-color: white;
+      color: #007bff;
+      border: 2px solid #007bff;
+      padding: 25px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      user-select: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button.product-btn:hover {
+      background-color: #007bff;
+      color: white;
+    }
+
+    button.action-btn {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 2px solid;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #submit-btn {
+      background-color: white;
+      color: #28a745;
+      border-color: #28a745;
+    }
+
+    #submit-btn:hover {
+      background-color: #28a745;
+      color: white;
+    }
+
+    #clear-btn {
+      background-color: white;
+      color: #dc3545;
+      border-color: #dc3545;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+    }
+
+    #clear-btn:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    #remove-last-btn {
+      background-color: white;
+      color: #ff9900;
+      border: 2px solid #ff9900;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      width: auto;
+    }
+
+    #remove-last-btn:hover {
+      background-color: #ff9900;
+      color: white;
+    }
+
+    .price {
+      display: block;
+      margin-top: 5px;
+      font-weight: normal;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    #total, #grand-total {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    /* Container for action buttons below product buttons */
+    .action-buttons-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .action-buttons-row button {
+      flex: 1;
+    }
+
+  </style>
 </head>
 <body>
 
-<img src="https://www.albrightonprimary.com/wp-content/themes/kiskadoo_albrighton_aphrodite_v1.4.1/customise/images/logo/logo.png" alt="Albrighton Nursery and Primary School Logo" class="logo" />
+  <img src="https://www.albrightonprimary.com/wp-content/themes/kiskadoo_albrighton_aphrodite_v1.4.1/customise/images/logo/logo.png" alt="Albrighton Nursery and Primary School Logo" class="logo" />
+  <h2>Tap to add a product</h2>
 
-<h2>Tap to add a product</h2>
+  <div class="container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="button-grid">
+        <button class="product-btn" data-name="Walkers crisps" data-price="0.50">Walkers crisps<br><span class="price">£0.50</span></button>
+        <button class="product-btn" data-name="Border biscuits" data-price="0.60">Border biscuits<br><span class="price">£0.60</span></button>
+        <button class="product-btn" data-name="White crème egg" data-price="0.80">White crème egg<br><span class="price">£0.80</span></button>
+        <button class="product-btn" data-name="Original crème egg" data-price="0.80">Original crème egg<br><span class="price">£0.80</span></button>
+        <button class="product-btn" data-name="Nature Valley bar" data-price="1.00">Nature Valley bar<br><span class="price">£1.00</span></button>
+        <button class="product-btn" data-name="Cawston Apple & Mango juice carton" data-price="1.00">Cawston Apple & Mango<br><span class="price">£1.00</span></button>
+        <button class="product-btn" data-name="Gogo squeeZ Apple smoothie" data-price="1.00">Gogo squeeZ Apple<br><span class="price">£1.00</span></button>
+        <button class="product-btn" data-name="Gogo squeeZ Apple & Strawberry smoothie" data-price="1.00">Gogo Apple & Strawberry<br><span class="price">£1.00</span></button>
+        <button class="product-btn" data-name="Sour cherry & apple squashies" data-price="1.50">Sour cherry squashies<br><span class="price">£1.50</span></button>
+      </div>
 
-<div class="button-grid" id="buttons-container">
-  <button class="product-btn" data-price="0.50">
-    Walkers crisps<br><span class="price">£0.50</span>
-  </button>
-  <button class="product-btn" data-price="0.60">
-    Border biscuits<br><span class="price">£0.60</span>
-  </button>
-  <button class="product-btn" data-price="0.80">
-    White crème egg<br><span class="price">£0.80</span>
-  </button>
-  <button class="product-btn" data-price="0.80">
-    Original crème egg<br><span class="price">£0.80</span>
-  </button>
-  <button class="product-btn" data-price="1.00">
-    Nature Valley bar<br><span class="price">£1.00</span>
-  </button>
-  <button class="product-btn" data-price="1.00">
-    Cawston Apple & Mango juice carton<br><span class="price">£1.00</span>
-  </button>
-  <button class="product-btn" data-price="1.00">
-    Gogo squeeZ Apple smoothie<br><span class="price">£1.00</span>
-  </button>
-  <button class="product-btn" data-price="1.00">
-    Gogo squeeZ Apple & Strawberry smoothie<br><span class="price">£1.00</span>
-  </button>
-  <button class="product-btn" data-price="1.50">
-    Sour cherry & apple squashies<br><span class="price">£1.50</span>
-  </button>
-  <button id="clear-btn">Clear</button>
-</div>
+      <div class="action-buttons-row">
+        <button id="clear-btn" class="action-btn">Clear</button>
+        <button id="remove-last-btn" class="action-btn">Remove Last Transaction</button>
+        <button id="submit-btn" class="action-btn">Submit</button>
+      </div>
 
-<div id="total">Total: £0.00</div>
+      <div class="history-panel">
+        <h3>Running Total & All Transactions</h3>
+        <ul id="history-list"></ul>
+        <div id="grand-total">Running Total: £0.00</div>
+      </div>
+    </div>
 
-<script>
-  const buttons = document.querySelectorAll('button.product-btn');
-  const totalDisplay = document.getElementById('total');
-  const clearBtn = document.getElementById('clear-btn');
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="selected-items">
+        <ul id="item-list"></ul>
+        <div id="total">Transaction Total: £0.00</div>
+      </div>
+    </div>
+  </div>
 
-  let total = 0;
+  <script>
+    const buttons = document.querySelectorAll('.product-btn');
+    const itemList = document.getElementById('item-list');
+    const totalDisplay = document.getElementById('total');
+    const grandTotalDisplay = document.getElementById('grand-total');
+    const historyList = document.getElementById('history-list');
+    const clearBtn = document.getElementById('clear-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const removeLastBtn = document.getElementById('remove-last-btn');
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const price = parseFloat(btn.dataset.price);
-      total += price;
-      updateTotal();
+    let transactionTotal = 0;
+    let grandTotal = 0;
+    let currentItems = [];
+    let transactionHistory = [];
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const price = parseFloat(btn.dataset.price);
+        const name = btn.dataset.name;
+        transactionTotal += price;
+        currentItems.push({ name, price });
+
+        const li = document.createElement('li');
+        li.textContent = `${name} - £${price.toFixed(2)}`;
+        itemList.appendChild(li);
+
+        updateTotals();
+      });
     });
-  });
 
-  clearBtn.addEventListener('click', () => {
-    total = 0;
-    updateTotal();
-  });
+    clearBtn.addEventListener('click', () => {
+      resetCurrentTransaction();
+    });
 
-  function updateTotal() {
-    totalDisplay.textContent = 'Total: £' + total.toFixed(2);
-  }
-</script>
+    submitBtn.addEventListener('click', () => {
+      if (currentItems.length === 0) return;
+
+      transactionHistory.push([...currentItems]);
+      grandTotal += transactionTotal;
+
+      const transactionText = currentItems.map(item => `${item.name} (£${item.price.toFixed(2)})`).join(', ');
+      const transactionNumber = transactionHistory.length;
+      const li = document.createElement('li');
+      li.textContent = `${transactionNumber}. Transaction: ${transactionText} — Total: £${transactionTotal.toFixed(2)}`;
+      historyList.appendChild(li);
+
+      resetCurrentTransaction();
+      updateTotals();
+    });
+
+    removeLastBtn.addEventListener('click', () => {
+      const last = transactionHistory.pop();
+      if (!last) return;
+
+      const lastTotal = last.reduce((sum, item) => sum + item.price, 0);
+      grandTotal -= lastTotal;
+
+      if (historyList.lastChild) {
+        historyList.removeChild(historyList.lastChild);
+      }
+
+      updateTotals();
+    });
+
+    function resetCurrentTransaction() {
+      transactionTotal = 0;
+      currentItems = [];
+      itemList.innerHTML = '';
+      updateTotals();
+    }
+
+    function updateTotals() {
+      totalDisplay.textContent = 'Transaction Total: £' + transactionTotal.toFixed(2);
+      grandTotalDisplay.textContent = 'Running Total: £' + grandTotal.toFixed(2);
+    }
+  </script>
 
 </body>
 </html>
