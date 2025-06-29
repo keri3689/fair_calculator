@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Product Calculator</title>
   <style>
     body {
@@ -167,25 +167,47 @@
   </style>
 </head>
 <body>
-  <img src="https://www.albrightonprimary.com/wp-content/themes/kiskadoo_albrighton_aphrodite_v1.4.1/customise/images/logo/logo.png" alt="Logo" class="logo">
+  <img
+    src="https://www.albrightonprimary.com/wp-content/themes/kiskadoo_albrighton_aphrodite_v1.4.1/customise/images/logo/logo.png"
+    alt="Logo"
+    class="logo"
+  />
   <h2>Tap to Add a Product</h2>
 
   <div class="layout">
     <!-- Blue Buttons: 3 Columns -->
     <div class="column">
-      <button class="product-btn" data-name="Walkers crisps" data-price="0.50">Walkers crisps<br>£0.50</button>
-      <button class="product-btn" data-name="Original crème egg" data-price="0.80">Original crème egg<br>£0.80</button>
-      <button class="product-btn" data-name="Gogo squeeZ Apple" data-price="1.00">Gogo squeeZ Apple<br>£1.00</button>
+      <button class="product-btn" data-name="Walkers crisps" data-price="0.50">
+        Walkers crisps<br />£0.50
+      </button>
+      <button class="product-btn" data-name="Original crème egg" data-price="0.80">
+        Original crème egg<br />£0.80
+      </button>
+      <button class="product-btn" data-name="Gogo squeeZ Apple" data-price="1.00">
+        Gogo squeeZ Apple<br />£1.00
+      </button>
     </div>
     <div class="column">
-      <button class="product-btn" data-name="Border biscuits" data-price="0.60">Border biscuits<br>£0.60</button>
-      <button class="product-btn" data-name="Nature Valley bar" data-price="1.00">Nature Valley bar<br>£1.00</button>
-      <button class="product-btn" data-name="Gogo Apple & Strawberry" data-price="1.00">Gogo Apple & Strawberry<br>£1.00</button>
+      <button class="product-btn" data-name="Border biscuits" data-price="0.60">
+        Border biscuits<br />£0.60
+      </button>
+      <button class="product-btn" data-name="Nature Valley bar" data-price="1.00">
+        Nature Valley bar<br />£1.00
+      </button>
+      <button class="product-btn" data-name="Gogo Apple & Strawberry" data-price="1.00">
+        Gogo Apple & Strawberry<br />£1.00
+      </button>
     </div>
     <div class="column">
-      <button class="product-btn" data-name="White crème egg" data-price="0.80">White crème egg<br>£0.80</button>
-      <button class="product-btn" data-name="Cawston Apple & Mango" data-price="1.00">Cawston Apple & Mango<br>£1.00</button>
-      <button class="product-btn" data-name="Squashies" data-price="1.50">Squashies<br>£1.50</button>
+      <button class="product-btn" data-name="White crème egg" data-price="0.80">
+        White crème egg<br />£0.80
+      </button>
+      <button class="product-btn" data-name="Cawston Apple & Mango" data-price="1.00">
+        Cawston Apple & Mango<br />£1.00
+      </button>
+      <button class="product-btn" data-name="Squashies" data-price="1.50">
+        Squashies<br />£1.50
+      </button>
     </div>
 
     <!-- Green Buttons: 2 Columns -->
@@ -227,5 +249,109 @@
     <ul id="history-list"></ul>
     <div id="grand-total">Running Total: £0.00</div>
   </div>
+
+  <script>
+    // Get references to elements
+    const productButtons = document.querySelectorAll('.product-btn, .extra-btn');
+    const itemList = document.getElementById('item-list');
+    const totalEl = document.getElementById('total');
+    const historyList = document.getElementById('history-list');
+    const grandTotalEl = document.getElementById('grand-total');
+
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const clearLastBtn = document.getElementById('clear-last-btn');
+    const removeLastBtn = document.getElementById('remove-last-btn');
+    const submitBtn = document.getElementById('submit-btn');
+
+    // Data stores
+    let currentTransactionItems = [];
+    let transactionHistory = [];
+    let runningTotal = 0;
+
+    // Helper to format currency
+    function formatCurrency(amount) {
+      return '£' + amount.toFixed(2);
+    }
+
+    // Update current transaction display and total
+    function updateCurrentTransaction() {
+      itemList.innerHTML = '';
+      currentTransactionItems.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ${formatCurrency(item.price)}`;
+        itemList.appendChild(li);
+      });
+
+      const total = currentTransactionItems.reduce((sum, item) => sum + item.price, 0);
+      totalEl.textContent = `Transaction Total: ${formatCurrency(total)}`;
+    }
+
+    // Update history panel and running total
+    function updateHistory() {
+      historyList.innerHTML = '';
+      transactionHistory.forEach((transaction, index) => {
+        const li = document.createElement('li');
+        li.classList.add('transaction');
+
+        // Show items and total for this transaction
+        const itemsText = transaction.items
+          .map((i) => `${i.name} (${formatCurrency(i.price)})`)
+          .join(', ');
+        li.textContent = `Transaction ${index + 1}: ${itemsText} — Total: ${formatCurrency(transaction.total)}`;
+
+        historyList.appendChild(li);
+      });
+
+      runningTotal = transactionHistory.reduce((sum, t) => sum + t.total, 0);
+      grandTotalEl.textContent = `Running Total: ${formatCurrency(runningTotal)}`;
+    }
+
+    // Add item to current transaction when product or extra button clicked
+    productButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const name = btn.getAttribute('data-name');
+        const price = parseFloat(btn.getAttribute('data-price'));
+        currentTransactionItems.push({ name, price });
+        updateCurrentTransaction();
+      });
+    });
+
+    // Clear All: clear current transaction ONLY
+    clearAllBtn.addEventListener('click', () => {
+      currentTransactionItems = [];
+      updateCurrentTransaction();
+    });
+
+    // Clear Last Product: remove last item added to current transaction
+    clearLastBtn.addEventListener('click', () => {
+      currentTransactionItems.pop();
+      updateCurrentTransaction();
+    });
+
+    // Remove Last Transaction from history and update running total
+    removeLastBtn.addEventListener('click', () => {
+      if (transactionHistory.length > 0) {
+        transactionHistory.pop();
+        updateHistory();
+      }
+    });
+
+    // Submit current transaction to history, then clear current
+    submitBtn.addEventListener('click', () => {
+      if (currentTransactionItems.length === 0) {
+        alert('No items in the current transaction to submit.');
+        return;
+      }
+      const total = currentTransactionItems.reduce((sum, item) => sum + item.price, 0);
+      transactionHistory.push({ items: currentTransactionItems, total });
+      currentTransactionItems = [];
+      updateCurrentTransaction();
+      updateHistory();
+    });
+
+    // Initialize display
+    updateCurrentTransaction();
+    updateHistory();
+  </script>
 </body>
 </html>
